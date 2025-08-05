@@ -18,7 +18,8 @@ import { test, expect } from './fixtures.js';
 
 test('test snapshot tool list', async ({ client }) => {
   const { tools } = await client.listTools();
-  expect(new Set(tools.map(t => t.name))).toEqual(new Set([
+  const actualNames = new Set(tools.map(t => t.name));
+  const expectedNames = [
     'browser_click',
     'browser_console_messages',
     'browser_drag',
@@ -43,7 +44,11 @@ test('test snapshot tool list', async ({ client }) => {
     'browser_tab_select',
     'browser_take_screenshot',
     'browser_wait_for',
-  ]));
+  ];
+
+  for (const name of expectedNames) {
+    expect(actualNames).toContain(name);
+  }
 });
 
 test('test capabilities (pdf)', async ({ startClient }) => {

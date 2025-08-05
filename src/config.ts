@@ -32,10 +32,12 @@ export type CLIOptions = {
   cdpEndpoint?: string;
   config?: string;
   device?: string;
+  excludeTools?: string[];
   executablePath?: string;
   headless?: boolean;
   host?: string;
   ignoreHttpsErrors?: boolean;
+  includeTools?: string[];
   isolated?: boolean;
   imageResponses?: 'allow' | 'omit';
   sandbox?: boolean;
@@ -184,6 +186,8 @@ export function configFromCLIOptions(cliOptions: CLIOptions): Config {
       host: cliOptions.host,
     },
     capabilities: cliOptions.caps as ToolCapability[],
+    excludeTools: cliOptions.excludeTools,
+    includeTools: cliOptions.includeTools,
     network: {
       allowedOrigins: cliOptions.allowedOrigins,
       blockedOrigins: cliOptions.blockedOrigins,
@@ -207,10 +211,12 @@ function configFromEnv(): Config {
   options.cdpEndpoint = envToString(process.env.PLAYWRIGHT_MCP_CDP_ENDPOINT);
   options.config = envToString(process.env.PLAYWRIGHT_MCP_CONFIG);
   options.device = envToString(process.env.PLAYWRIGHT_MCP_DEVICE);
+  options.excludeTools = commaSeparatedList(process.env.PLAYWRIGHT_MCP_EXCLUDE_TOOLS);
   options.executablePath = envToString(process.env.PLAYWRIGHT_MCP_EXECUTABLE_PATH);
   options.headless = envToBoolean(process.env.PLAYWRIGHT_MCP_HEADLESS);
   options.host = envToString(process.env.PLAYWRIGHT_MCP_HOST);
   options.ignoreHttpsErrors = envToBoolean(process.env.PLAYWRIGHT_MCP_IGNORE_HTTPS_ERRORS);
+  options.includeTools = commaSeparatedList(process.env.PLAYWRIGHT_MCP_INCLUDE_TOOLS);
   options.isolated = envToBoolean(process.env.PLAYWRIGHT_MCP_ISOLATED);
   if (process.env.PLAYWRIGHT_MCP_IMAGE_RESPONSES === 'omit')
     options.imageResponses = 'omit';

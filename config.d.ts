@@ -86,6 +86,16 @@ export type Config = {
   capabilities?: ToolCapability[];
 
   /**
+   * List of tool names to exclude from the server.
+   */
+  excludeTools?: string[];
+
+  /**
+   * List of tool names to include (if specified, only these tools will be available).
+   */
+  includeTools?: string[];
+
+  /**
    * Whether to save the Playwright session into the output directory.
    */
   saveSession?: boolean;
