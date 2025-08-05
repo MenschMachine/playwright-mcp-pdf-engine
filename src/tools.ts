@@ -30,17 +30,19 @@ import screenshot from './tools/screenshot.js';
 import wait from './tools/wait.js';
 import mouse from './tools/mouse.js';
 
-// Plugins
-import { pluginRegistry } from './plugins/registry.js';
+// Plugin system
+import { pluginRegistry } from './plugin-system/index.js';
+
+// Built-in plugins
 import { mouseExtensionsPlugin } from './plugins/mouse-extensions.js';
-import { highLevelActionsPlugin } from './plugins/high-level-actions.js';
+import { pdfEngineDebuggingActions } from './plugins/high-level-actions.js';
 
 import type { Tool } from './tools/tool.js';
 import type { FullConfig } from './config.js';
 
 // Register built-in plugins
 pluginRegistry.register(mouseExtensionsPlugin);
-pluginRegistry.register(highLevelActionsPlugin);
+pluginRegistry.register(pdfEngineDebuggingActions);
 
 export const allTools: Tool<any>[] = [
   ...common,

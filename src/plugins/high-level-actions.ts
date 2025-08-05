@@ -1,69 +1,7 @@
-/**
- * Copyright (c) Microsoft Corporation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import {z} from 'zod';
 import {defineTabTool} from '../tools/tool.js';
-import type {Plugin} from './types.js';
-
-// Reusable helper function to create selector-based tools
-const createSelectorTool = (
-    name: string,
-    description: string,
-    selector: string,
-    action: 'click' | 'check' | 'uncheck' = 'click'
-) => {
-    return defineTabTool({
-        capability: 'core',
-        schema: {
-            name,
-            title: description,
-            description: `${description} by interacting with ${selector}`,
-            inputSchema: z.object({}),
-            type: 'destructive',
-        },
-
-        handle: async (tab, params, response) => {
-            response.setIncludeSnapshot();
-
-            const element = await tab.page.$(selector);
-            if (!element)
-                throw new Error(`Element not found: ${selector}`);
-
-
-            response.addCode(`// ${description}`);
-
-            if (action === 'click') {
-                response.addCode(`await page.click('${selector}');`);
-                await tab.waitForCompletion(async () => {
-                    await element.click();
-                });
-            } else if (action === 'check') {
-                response.addCode(`await page.check('${selector}');`);
-                await tab.waitForCompletion(async () => {
-                    await element.check();
-                });
-            } else if (action === 'uncheck') {
-                response.addCode(`await page.uncheck('${selector}');`);
-                await tab.waitForCompletion(async () => {
-                    await element.uncheck();
-                });
-            }
-        },
-    });
-};
+import {createSelectorTool} from '../plugin-system/index.js';
+import type {Plugin} from '../plugin-system/types.js';
 
 // High-level semantic tools
 const enableDebugMode = createSelectorTool(
@@ -80,6 +18,42 @@ const disableDebugMode = createSelectorTool(
     'uncheck'
 );
 
+const debugStepIntoFirstChild = createSelectorTool(
+    'debug_step_into_first_child',
+    'Debug step into first child',
+    '#debug-step-into-first-child',
+    'click'
+);
+
+const debugStepToNextSibling = createSelectorTool(
+    'debug_step_to_next_sibling',
+    'Step to next sibling element',
+    '#debug-step-to-next-sibling',
+    'click'
+);
+
+const debugReturnToParent = createSelectorTool(
+    'debug_return_to_parent',
+    'Return to parent element',
+    '#debug-return-to-parent',
+    'click'
+);
+
+const debugStepNext = createSelectorTool(
+    'debug_step_next',
+    'Step to next element in traversal order',
+    '#debug-step-next',
+    'click'
+);
+
+const debugReset = createSelectorTool(
+    'debug_reset',
+    'Reset traversal to the beginning',
+    '#debug-reset',
+    'click'
+);
+
+
 // File upload tool
 const uploadXmlFile = defineTabTool({
     capability: 'core',
@@ -95,7 +69,7 @@ const uploadXmlFile = defineTabTool({
 
     handle: async (tab, params, response) => {
         response.setIncludeSnapshot();
-        
+
         response.addCode(`// Upload file to xml-file-input`);
         response.addCode(`await page.setInputFiles('#xml-file-input', '${params.filePath}');`);
 
@@ -109,23 +83,28 @@ const uploadXmlFile = defineTabTool({
 });
 
 // noinspection JSUnusedLocalSymbols
-export const highLevelActionsPlugin: Plugin = {
-    name: 'high-level-actions',
+export const pdfEngineDebuggingActions: Plugin = {
+    name: 'pdf-engine-debugging-actions-actions',
     version: '1.0.0',
-    description: 'High-level semantic actions for common UI patterns',
+    description: 'High-level pdf engine debugging actions',
     author: 'Playwright MCP',
     tools: [
         enableDebugMode,
         disableDebugMode,
+        debugStepIntoFirstChild,
+        debugStepToNextSibling,
+        debugStepNext,
+        debugReturnToParent,
+        debugReset,
         uploadXmlFile,
     ],
 
     initialize: async context => {
-        console.log('High-level actions plugin initialized');
+        console.log('Pdf Engine actions plugin initialized');
     },
 
     cleanup: async () => {
-        console.log('High-level actions plugin cleaned up');
+        console.log('Pdf Engine actions plugin cleaned up');
     },
 };
 
