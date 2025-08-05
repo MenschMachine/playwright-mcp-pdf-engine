@@ -30,8 +30,15 @@ import screenshot from './tools/screenshot.js';
 import wait from './tools/wait.js';
 import mouse from './tools/mouse.js';
 
+// Plugins
+import { pluginRegistry } from './plugins/registry.js';
+import { mouseExtensionsPlugin } from './plugins/mouse-extensions.js';
+
 import type { Tool } from './tools/tool.js';
 import type { FullConfig } from './config.js';
+
+// Register built-in plugins
+pluginRegistry.register(mouseExtensionsPlugin);
 
 export const allTools: Tool<any>[] = [
   ...common,
@@ -49,7 +56,10 @@ export const allTools: Tool<any>[] = [
   ...snapshot,
   ...tabs,
   ...wait,
+  ...pluginRegistry.getAllTools(),
 ];
+
+export { pluginRegistry };
 
 export function filteredTools(config: FullConfig) {
   return allTools.filter(tool => tool.capability.startsWith('core') || config.capabilities?.includes(tool.capability));
