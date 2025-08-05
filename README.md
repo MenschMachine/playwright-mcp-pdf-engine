@@ -155,9 +155,6 @@ Playwright MCP server supports following arguments. They can be provided in the 
   --caps <caps>                comma-separated list of additional capabilities
                                to enable, possible values: vision, pdf.
   --cdp-endpoint <endpoint>    CDP endpoint to connect to.
-  --exclude-tools <tools>      comma-separated list of tool names to exclude
-  --include-tools <tools>      comma-separated list of tool names to include
-                               (if specified, only these tools will be available)
   --config <path>              path to the configuration file.
   --device <device>            device to emulate, for example: "iPhone 15"
   --executable-path <path>     path to the browser executable.
@@ -434,14 +431,6 @@ http.createServer(async (req, res) => {
 
 <!-- NOTE: This has been generated via update-readme.js -->
 
-- **accept_cookies**
-  - Title: Accept cookies
-  - Description: Accept cookies by interacting with .cookie-accept, #accept-cookies, [data-testid="accept-cookies"], button[data-action="accept-cookies"]
-  - Parameters: None
-  - Read-only: **false**
-
-<!-- NOTE: This has been generated via update-readme.js -->
-
 - **browser_click**
   - Title: Click
   - Description: Perform click on a web page
@@ -630,25 +619,9 @@ http.createServer(async (req, res) => {
 
 <!-- NOTE: This has been generated via update-readme.js -->
 
-- **close_modal**
-  - Title: Close modal dialog
-  - Description: Close modal dialog by interacting with .modal-close, .close-button, [data-dismiss="modal"], .overlay-close, [aria-label="Close"]
-  - Parameters: None
-  - Read-only: **false**
-
-<!-- NOTE: This has been generated via update-readme.js -->
-
 - **disable_debug_mode**
   - Title: Disable debug mode
-  - Description: Disable debug mode by interacting with [data-testid="debug-checkbox"], input[name="debug"], #debug-mode
-  - Parameters: None
-  - Read-only: **false**
-
-<!-- NOTE: This has been generated via update-readme.js -->
-
-- **enable_dark_mode**
-  - Title: Enable dark mode
-  - Description: Enable dark mode by interacting with [data-testid="dark-mode-toggle"], input[name="theme"][value="dark"], #dark-mode
+  - Description: Disable debug mode by interacting with #debug-toggle-on-off
   - Parameters: None
   - Read-only: **false**
 
@@ -656,48 +629,26 @@ http.createServer(async (req, res) => {
 
 - **enable_debug_mode**
   - Title: Enable debug mode
-  - Description: Enable debug mode by interacting with [data-testid="debug-checkbox"], input[name="debug"], #debug-mode
+  - Description: Enable debug mode by interacting with #debug-toggle-on-off
   - Parameters: None
   - Read-only: **false**
 
 <!-- NOTE: This has been generated via update-readme.js -->
 
-- **enable_light_mode**
-  - Title: Enable light mode
-  - Description: Enable light mode by interacting with [data-testid="dark-mode-toggle"], input[name="theme"][value="light"], #light-mode
-  - Parameters: None
+- **start**
+  - Title: Start navigation
+  - Description: Navigate to a URL
+  - Parameters:
+    - `url` (string): The URL to navigate to
   - Read-only: **false**
 
 <!-- NOTE: This has been generated via update-readme.js -->
 
-- **open_menu**
-  - Title: Open navigation menu
-  - Description: Open navigation menu by interacting with .menu-toggle, .hamburger, #menu-button, [data-testid="menu-toggle"], .nav-toggle
-  - Parameters: None
-  - Read-only: **false**
-
-<!-- NOTE: This has been generated via update-readme.js -->
-
-- **reject_cookies**
-  - Title: Reject cookies
-  - Description: Reject cookies by interacting with .cookie-reject, #reject-cookies, [data-testid="reject-cookies"], button[data-action="reject-cookies"]
-  - Parameters: None
-  - Read-only: **false**
-
-<!-- NOTE: This has been generated via update-readme.js -->
-
-- **reset_settings**
-  - Title: Reset settings to default
-  - Description: Reset settings to default by interacting with .reset-button, #reset, [data-testid="reset-button"], button[data-action="reset"]
-  - Parameters: None
-  - Read-only: **false**
-
-<!-- NOTE: This has been generated via update-readme.js -->
-
-- **save_settings**
-  - Title: Save current settings
-  - Description: Save current settings by interacting with button[type="submit"], .save-button, #save, [data-testid="save-button"]
-  - Parameters: None
+- **upload_xml_file**
+  - Title: Upload XML file
+  - Description: Upload a file to the xml-file-input element
+  - Parameters:
+    - `filePath` (string): Absolute path to the XML file to upload
   - Read-only: **false**
 
 </details>

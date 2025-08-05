@@ -80,6 +80,33 @@ const disableDebugMode = createSelectorTool(
     'uncheck'
 );
 
+// File upload tool
+const uploadXmlFile = defineTabTool({
+    capability: 'core',
+    schema: {
+        name: 'upload_xml_file',
+        title: 'Upload XML file',
+        description: 'Upload a file to the xml-file-input element',
+        inputSchema: z.object({
+            filePath: z.string().describe('Absolute path to the XML file to upload'),
+        }),
+        type: 'destructive',
+    },
+
+    handle: async (tab, params, response) => {
+        response.setIncludeSnapshot();
+        
+        response.addCode(`// Upload file to xml-file-input`);
+        response.addCode(`await page.setInputFiles('#xml-file-input', '${params.filePath}');`);
+
+        await tab.waitForCompletion(async () => {
+            const fileInput = await tab.page.$('#xml-file-input');
+            if (!fileInput)
+                throw new Error('Element with ID "xml-file-input" not found');
+            await fileInput.setInputFiles(params.filePath);
+        });
+    },
+});
 
 // noinspection JSUnusedLocalSymbols
 export const highLevelActionsPlugin: Plugin = {
@@ -90,6 +117,7 @@ export const highLevelActionsPlugin: Plugin = {
     tools: [
         enableDebugMode,
         disableDebugMode,
+        uploadXmlFile,
     ],
 
     initialize: async context => {
@@ -105,4 +133,5 @@ export const highLevelActionsPlugin: Plugin = {
 export default [
     enableDebugMode,
     disableDebugMode,
+    uploadXmlFile,
 ];
