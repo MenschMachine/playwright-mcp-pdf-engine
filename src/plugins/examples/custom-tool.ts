@@ -32,8 +32,8 @@ const customPageInfo = defineTool({
 
   handle: async (context, params, response) => {
     const tab = await context.ensureTab();
-    
-    const pageInfo = await tab.page.evaluate((includeMetrics) => {
+
+    const pageInfo = await tab.page.evaluate(includeMetrics => {
       const info: any = {
         title: document.title,
         url: window.location.href,
@@ -41,7 +41,7 @@ const customPageInfo = defineTool({
         elementCount: document.querySelectorAll('*').length,
         hasJavaScript: !!window.navigator.userAgent,
       };
-      
+
       if (includeMetrics && 'performance' in window) {
         const perf = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
         if (perf) {
@@ -49,7 +49,7 @@ const customPageInfo = defineTool({
           info.domContentLoaded = perf.domContentLoadedEventEnd - perf.fetchStart;
         }
       }
-      
+
       return info;
     }, params.includeMetrics);
 
@@ -78,29 +78,31 @@ const customHighlight = defineTabTool({
     const duration = params.duration || 3000;
 
     await tab.page.evaluate(
-      ({ selector, color, duration }) => {
-        const element = document.querySelector(selector);
-        if (element && element instanceof HTMLElement) {
-          const originalStyle = element.style.cssText;
-          element.style.backgroundColor = color;
-          element.style.transition = 'background-color 0.2s';
-          
-          setTimeout(() => {
-            element.style.cssText = originalStyle;
-          }, duration);
-        }
-      },
-      { 
-        selector: await locator.evaluate(el => {
+        ({ selector, color, duration }) => {
+          const element = document.querySelector(selector);
+          if (element && element instanceof HTMLElement) {
+            const originalStyle = element.style.cssText;
+            element.style.backgroundColor = color;
+            element.style.transition = 'background-color 0.2s';
+
+            setTimeout(() => {
+              element.style.cssText = originalStyle;
+            }, duration);
+          }
+        },
+        {
+          selector: await locator.evaluate(el => {
           // Generate a unique selector for the element
-          let selector = el.tagName.toLowerCase();
-          if (el.id) selector += `#${el.id}`;
-          if (el.className) selector += `.${el.className.split(' ').join('.')}`;
-          return selector;
-        }),
-        color,
-        duration
-      }
+            let selector = el.tagName.toLowerCase();
+            if (el.id)
+              selector += `#${el.id}`;
+            if (el.className)
+              selector += `.${el.className.split(' ').join('.')}`;
+            return selector;
+          }),
+          color,
+          duration
+        }
     );
 
     response.addResult(`Highlighted element for ${duration}ms with color: ${color}`);
@@ -114,13 +116,13 @@ export const customToolsPlugin: Plugin = {
   description: 'Example custom tools demonstrating the plugin system',
   author: 'Playwright MCP Team',
   tools: [customPageInfo, customHighlight],
-  
-  initialize: async (context) => {
+
+  initialize: async context => {
     console.log('Custom Tools plugin initialized with context');
     // You could perform setup here, like loading configuration,
     // setting up event listeners, or initializing resources
   },
-  
+
   cleanup: async () => {
     console.log('Custom Tools plugin cleaned up');
     // Cleanup resources, remove event listeners, etc.

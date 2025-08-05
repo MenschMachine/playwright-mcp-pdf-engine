@@ -26,32 +26,32 @@ export { mouseExtensionsPlugin } from './mouse-extensions.js';
 
 /**
  * Plugin System Usage Guide:
- * 
+ *
  * 1. Create a new plugin:
  *    - Create a new .ts file in src/plugins/
  *    - Define your tools using defineTabTool or defineTool
  *    - Export a Plugin object with metadata and tools
- * 
+ *
  * 2. Register the plugin:
  *    - Import your plugin in src/tools.ts
  *    - Call pluginRegistry.register(yourPlugin)
- * 
+ *
  * 3. Plugin lifecycle:
  *    - initialize() is called when the plugin is first loaded
  *    - cleanup() is called when the plugin is unloaded
- * 
+ *
  * Example:
- * 
+ *
  * ```typescript
  * import { Plugin } from './types.js';
  * import { defineTool } from '../tools/tool.js';
- * 
+ *
  * const myTool = defineTool({
  *   capability: 'core',
  *   schema: { name: 'my_tool', ... },
  *   handle: async (context, params, response) => { ... }
  * });
- * 
+ *
  * export const myPlugin: Plugin = {
  *   name: 'my-plugin',
  *   version: '1.0.0',

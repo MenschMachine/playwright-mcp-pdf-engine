@@ -26,13 +26,13 @@ export class PluginRegistry {
    * Register a plugin with the registry
    */
   register(plugin: Plugin): void {
-    if (this.plugins.has(plugin.name)) {
+    if (this.plugins.has(plugin.name))
       throw new Error(`Plugin '${plugin.name}' is already registered`);
-    }
-    
+
+
     // Validate plugin
     this.validatePlugin(plugin);
-    
+
     this.plugins.set(plugin.name, plugin);
   }
 
@@ -68,7 +68,7 @@ export class PluginRegistry {
    */
   getAllTools(): Tool<any>[] {
     return Array.from(this.plugins.values())
-      .flatMap(plugin => plugin.tools);
+        .flatMap(plugin => plugin.tools);
   }
 
   /**
@@ -84,18 +84,18 @@ export class PluginRegistry {
    */
   async initializeAll(context: Context): Promise<void> {
     const initPromises = Array.from(this.plugins.entries())
-      .filter(([name]) => !this.initialized.has(name))
-      .map(async ([name, plugin]) => {
-        try {
-          if (plugin.initialize) {
-            await plugin.initialize(context);
+        .filter(([name]) => !this.initialized.has(name))
+        .map(async ([name, plugin]) => {
+          try {
+            if (plugin.initialize)
+              await plugin.initialize(context);
+
+            this.initialized.add(name);
+          } catch (error) {
+            console.error(`Failed to initialize plugin '${name}':`, error);
+            throw error;
           }
-          this.initialized.add(name);
-        } catch (error) {
-          console.error(`Failed to initialize plugin '${name}':`, error);
-          throw error;
-        }
-      });
+        });
 
     await Promise.all(initPromises);
   }
@@ -105,17 +105,17 @@ export class PluginRegistry {
    */
   async initializePlugin(pluginName: string, context: Context): Promise<void> {
     const plugin = this.plugins.get(pluginName);
-    if (!plugin) {
+    if (!plugin)
       throw new Error(`Plugin '${pluginName}' not found`);
-    }
 
-    if (this.initialized.has(pluginName)) {
+
+    if (this.initialized.has(pluginName))
       return; // Already initialized
-    }
 
-    if (plugin.initialize) {
+
+    if (plugin.initialize)
       await plugin.initialize(context);
-    }
+
     this.initialized.add(pluginName);
   }
 
@@ -124,17 +124,17 @@ export class PluginRegistry {
    */
   async cleanupAll(): Promise<void> {
     const cleanupPromises = Array.from(this.plugins.entries())
-      .filter(([name]) => this.initialized.has(name))
-      .map(async ([name, plugin]) => {
-        try {
-          if (plugin.cleanup) {
-            await plugin.cleanup();
+        .filter(([name]) => this.initialized.has(name))
+        .map(async ([name, plugin]) => {
+          try {
+            if (plugin.cleanup)
+              await plugin.cleanup();
+
+            this.initialized.delete(name);
+          } catch (error) {
+            console.error(`Failed to cleanup plugin '${name}':`, error);
           }
-          this.initialized.delete(name);
-        } catch (error) {
-          console.error(`Failed to cleanup plugin '${name}':`, error);
-        }
-      });
+        });
 
     await Promise.all(cleanupPromises);
   }
@@ -158,24 +158,24 @@ export class PluginRegistry {
   }
 
   private validatePlugin(plugin: Plugin): void {
-    if (!plugin.name || typeof plugin.name !== 'string') {
+    if (!plugin.name || typeof plugin.name !== 'string')
       throw new Error('Plugin must have a valid name');
-    }
-    
-    if (!plugin.version || typeof plugin.version !== 'string') {
+
+
+    if (!plugin.version || typeof plugin.version !== 'string')
       throw new Error('Plugin must have a valid version');
-    }
-    
-    if (!Array.isArray(plugin.tools)) {
+
+
+    if (!Array.isArray(plugin.tools))
       throw new Error('Plugin must have a tools array');
-    }
+
 
     // Validate tool names are unique within the plugin
     const toolNames = new Set<string>();
     for (const tool of plugin.tools) {
-      if (toolNames.has(tool.schema.name)) {
+      if (toolNames.has(tool.schema.name))
         throw new Error(`Plugin '${plugin.name}' has duplicate tool name: ${tool.schema.name}`);
-      }
+
       toolNames.add(tool.schema.name);
     }
   }

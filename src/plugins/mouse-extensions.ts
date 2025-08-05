@@ -76,9 +76,9 @@ const mouseUp = defineTabTool({
     response.addCode(`await page.mouse.up(${params.button ? `{ button: '${params.button}' }` : ''});`);
 
     await tab.waitForCompletion(async () => {
-      if (params.x !== undefined && params.y !== undefined) {
+      if (params.x !== undefined && params.y !== undefined)
         await tab.page.mouse.move(params.x, params.y);
-      }
+
       await tab.page.mouse.up({ button: params.button || 'left' });
     });
   },
@@ -90,11 +90,11 @@ export const mouseExtensionsPlugin: Plugin = {
   description: 'Extended mouse interaction tools for precise control',
   author: 'Playwright MCP',
   tools: [mouseDown, mouseUp],
-  
-  initialize: async (context) => {
+
+  initialize: async context => {
     console.log('Mouse Extensions plugin initialized');
   },
-  
+
   cleanup: async () => {
     console.log('Mouse Extensions plugin cleaned up');
   },

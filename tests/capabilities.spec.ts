@@ -64,6 +64,9 @@ test('test capabilities (vision)', async ({ startClient }) => {
   expect(toolNames).toContain('browser_mouse_move_xy');
   expect(toolNames).toContain('browser_mouse_click_xy');
   expect(toolNames).toContain('browser_mouse_drag_xy');
+  // Plugin tools
+  expect(toolNames).toContain('browser_mouse_down');
+  expect(toolNames).toContain('browser_mouse_up');
 });
 
 test('support for legacy --vision option', async ({ startClient }) => {
@@ -75,4 +78,7 @@ test('support for legacy --vision option', async ({ startClient }) => {
   expect(toolNames).toContain('browser_mouse_move_xy');
   expect(toolNames).toContain('browser_mouse_click_xy');
   expect(toolNames).toContain('browser_mouse_drag_xy');
+  // Plugin tools
+  expect(toolNames).toContain('browser_mouse_down');
+  expect(toolNames).toContain('browser_mouse_up');
 });

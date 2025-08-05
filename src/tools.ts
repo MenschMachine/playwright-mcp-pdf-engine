@@ -33,12 +33,14 @@ import mouse from './tools/mouse.js';
 // Plugins
 import { pluginRegistry } from './plugins/registry.js';
 import { mouseExtensionsPlugin } from './plugins/mouse-extensions.js';
+import { highLevelActionsPlugin } from './plugins/high-level-actions.js';
 
 import type { Tool } from './tools/tool.js';
 import type { FullConfig } from './config.js';
 
 // Register built-in plugins
 pluginRegistry.register(mouseExtensionsPlugin);
+pluginRegistry.register(highLevelActionsPlugin);
 
 export const allTools: Tool<any>[] = [
   ...common,
