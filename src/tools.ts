@@ -68,12 +68,12 @@ export function filteredTools(config: FullConfig) {
   
   // Apply include filter first (if specified, only these tools are included)
   if (config.includeTools && config.includeTools.length > 0) {
-    tools = tools.filter(tool => config.includeTools!.includes(tool.name));
+    tools = tools.filter(tool => config.includeTools!.includes(tool.schema.name));
   }
   
   // Apply exclude filter
   if (config.excludeTools && config.excludeTools.length > 0) {
-    tools = tools.filter(tool => !config.excludeTools!.includes(tool.name));
+    tools = tools.filter(tool => !config.excludeTools!.includes(tool.schema.name));
   }
   
   return tools;

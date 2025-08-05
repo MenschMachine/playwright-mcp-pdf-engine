@@ -155,6 +155,9 @@ Playwright MCP server supports following arguments. They can be provided in the 
   --caps <caps>                comma-separated list of additional capabilities
                                to enable, possible values: vision, pdf.
   --cdp-endpoint <endpoint>    CDP endpoint to connect to.
+  --exclude-tools <tools>      comma-separated list of tool names to exclude
+  --include-tools <tools>      comma-separated list of tool names to include
+                               (if specified, only these tools will be available)
   --config <path>              path to the configuration file.
   --device <device>            device to emulate, for example: "iPhone 15"
   --executable-path <path>     path to the browser executable.
@@ -292,6 +295,12 @@ npx @playwright/mcp@latest --config path/to/config.json
     'pdf' |     // PDF generation
     'vision' |  // Coordinate-based interactions
   >;
+  
+  // Tool filtering - exclude specific tools by name
+  excludeTools?: string[];
+  
+  // Tool filtering - include only specific tools by name (if specified, only these tools will be available)
+  includeTools?: string[];
 
   // Directory for output files
   outputDir?: string;
@@ -313,6 +322,42 @@ npx @playwright/mcp@latest --config path/to/config.json
 }
 ```
 </details>
+
+### Tool Filtering
+
+You can control which tools are available by using include/exclude filters:
+
+**Command line:**
+```bash
+# Exclude specific tools
+npx @playwright/mcp@latest --exclude-tools browser_take_screenshot,browser_drag
+
+# Include only specific tools
+npx @playwright/mcp@latest --include-tools browser_navigate,browser_click,browser_snapshot
+```
+
+**Environment variables:**
+```bash
+# Exclude tools
+PLAYWRIGHT_MCP_EXCLUDE_TOOLS=browser_take_screenshot,browser_drag npx @playwright/mcp@latest
+
+# Include only specific tools  
+PLAYWRIGHT_MCP_INCLUDE_TOOLS=browser_navigate,browser_click,browser_snapshot npx @playwright/mcp@latest
+```
+
+**Configuration file:**
+```json
+{
+  "excludeTools": ["browser_take_screenshot", "browser_drag"],
+  "includeTools": ["browser_navigate", "browser_click", "browser_snapshot"]
+}
+```
+
+**Filtering behavior:**
+- If `includeTools` is specified, only those tools will be available (whitelist)
+- If `excludeTools` is specified, those tools will be removed (blacklist)  
+- If both are specified, `includeTools` is applied first, then `excludeTools`
+- All filtering happens after capability filtering (tools must still match their required capabilities)
 
 ### Standalone MCP server
 
