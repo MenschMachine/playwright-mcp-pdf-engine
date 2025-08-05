@@ -9,4 +9,5 @@ playwright-report/
 .env
 sessions/
 .aider*
-config.pdf-engine.json
+config.*.json
+!config.example.json

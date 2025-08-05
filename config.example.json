@@ -1,0 +1,151 @@
+{
+  "$schema": "./config-schema.json",
+  "_comment": "Complete example configuration for Playwright MCP server. All options are optional.",
+
+  "browser": {
+    "browserName": "chromium",
+    "isolated": false,
+    "userDataDir": "./browser-profile",
+    "launchOptions": {
+      "channel": "chrome",
+      "headless": false,
+      "executablePath": "/usr/bin/google-chrome",
+      "args": [
+        "--disable-web-security",
+        "--disable-features=VizDisplayCompositor"
+      ],
+      "env": {
+        "LANG": "en_US.UTF-8"
+      },
+      "timeout": 30000,
+      "chromiumSandbox": true,
+      "firefoxUserPrefs": {
+        "dom.webnotifications.enabled": false
+      }
+    },
+    "contextOptions": {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "locale": "en-US",
+      "timezoneId": "America/New_York",
+      "permissions": ["geolocation", "camera", "microphone"],
+      "geolocation": {
+        "latitude": 40.7128,
+        "longitude": -74.0060
+      },
+      "colorScheme": "dark",
+      "reducedMotion": "reduce",
+      "forcedColors": "none",
+      "extraHTTPHeaders": {
+        "X-Custom-Header": "custom-value"
+      },
+      "httpCredentials": {
+        "username": "user",
+        "password": "pass"
+      },
+      "offline": false,
+      "acceptDownloads": true,
+      "ignoreHTTPSErrors": true,
+      "bypassCSP": false,
+      "javaScriptEnabled": true,
+      "storageState": {
+        "cookies": [],
+        "origins": []
+      }
+    },
+    "cdpEndpoint": "ws://localhost:9222/devtools/browser",
+    "remoteEndpoint": "ws://remote-playwright-server:3000"
+  },
+
+  "server": {
+    "port": 3000,
+    "host": "localhost"
+  },
+
+  "capabilities": [
+    "core",
+    "vision", 
+    "pdf"
+  ],
+
+  "includeTools": [
+    "browser_navigate",
+    "browser_snapshot",
+    "browser_click",
+    "browser_type",
+    "browser_take_screenshot",
+    "enable_debug_mode",
+    "disable_debug_mode",
+    "upload_xml_file"
+  ],
+
+  "excludeTools": [
+    "browser_install",
+    "browser_pdf_save",
+    "browser_tab_list",
+    "browser_tab_new",
+    "browser_tab_select",
+    "browser_tab_close"
+  ],
+
+  "saveSession": true,
+  "saveTrace": true,
+  "outputDir": "./mcp-outputs",
+
+  "network": {
+    "allowedOrigins": [
+      "https://example.com",
+      "https://*.trusted-domain.com",
+      "http://localhost:*"
+    ],
+    "blockedOrigins": [
+      "https://ads.google.com",
+      "https://*.analytics.com",
+      "https://tracker.example.com"
+    ]
+  },
+
+  "imageResponses": "allow",
+
+  "_examples": {
+    "_browserOptions": {
+      "browserName": "firefox | webkit | chromium",
+      "isolated": "true = in-memory profile, false = persistent profile",
+      "userDataDir": "Path to browser profile directory"
+    },
+    "_launchOptions": {
+      "channel": "chrome | chrome-beta | chrome-dev | chrome-canary | msedge | msedge-beta | msedge-dev",
+      "headless": "true | false | 'new'",
+      "executablePath": "Path to browser executable",
+      "args": ["Browser launch arguments"],
+      "timeout": "Launch timeout in milliseconds"
+    },
+    "_contextOptions": {
+      "viewport": "Browser window size or null for native size",
+      "userAgent": "Custom user agent string",
+      "locale": "Browser locale (e.g., 'en-US', 'de-DE')",
+      "timezoneId": "Timezone identifier",
+      "permissions": "Granted permissions array",
+      "geolocation": "Mock geolocation coordinates",
+      "colorScheme": "light | dark | no-preference",
+      "reducedMotion": "reduce | no-preference"
+    },
+    "_capabilities": {
+      "core": "Basic browser automation (always enabled)",
+      "vision": "Coordinate-based interactions (mouse_click_xy, etc.)",
+      "pdf": "PDF generation and manipulation"
+    },
+    "_toolFiltering": {
+      "includeTools": "Whitelist: only these tools available",
+      "excludeTools": "Blacklist: remove these tools",
+      "priority": "includeTools applied first, then excludeTools"
+    },
+    "_networkFiltering": {
+      "allowedOrigins": "URLs browser can access (supports wildcards)",
+      "blockedOrigins": "URLs to block (overrides allowedOrigins)"
+    }
+  }
+}

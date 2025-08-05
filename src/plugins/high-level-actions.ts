@@ -1,7 +1,22 @@
-import {z} from 'zod';
-import {defineTabTool} from '../tools/tool.js';
-import {createSelectorTool} from '../plugin-system/index.js';
-import type {Plugin} from '../plugin-system/types.js';
+/**
+ * Copyright (c) Microsoft Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { z } from 'zod';
+import { defineTabTool } from '../tools/tool.js';
+import { createSelectorTool } from '../plugin-system/index.js';
+import type { Plugin } from '../plugin-system/types.js';
 
 // High-level semantic tools
 const enableDebugMode = createSelectorTool(
@@ -56,61 +71,61 @@ const debugReset = createSelectorTool(
 
 // File upload tool
 const uploadXmlFile = defineTabTool({
-    capability: 'core',
-    schema: {
-        name: 'upload_xml_file',
-        title: 'Upload XML file',
-        description: 'Upload a file to the xml-file-input element',
-        inputSchema: z.object({
-            filePath: z.string().describe('Absolute path to the XML file to upload'),
-        }),
-        type: 'destructive',
-    },
+  capability: 'core',
+  schema: {
+    name: 'upload_xml_file',
+    title: 'Upload XML file',
+    description: 'Upload a file to the xml-file-input element',
+    inputSchema: z.object({
+      filePath: z.string().describe('Absolute path to the XML file to upload'),
+    }),
+    type: 'destructive',
+  },
 
-    handle: async (tab, params, response) => {
-        response.setIncludeSnapshot();
+  handle: async (tab, params, response) => {
+    response.setIncludeSnapshot();
 
-        response.addCode(`// Upload file to xml-file-input`);
-        response.addCode(`await page.setInputFiles('#xml-file-input', '${params.filePath}');`);
+    response.addCode(`// Upload file to xml-file-input`);
+    response.addCode(`await page.setInputFiles('#xml-file-input', '${params.filePath}');`);
 
-        await tab.waitForCompletion(async () => {
-            const fileInput = await tab.page.$('#xml-file-input');
-            if (!fileInput)
-                throw new Error('Element with ID "xml-file-input" not found');
-            await fileInput.setInputFiles(params.filePath);
-        });
-    },
+    await tab.waitForCompletion(async () => {
+      const fileInput = await tab.page.$('#xml-file-input');
+      if (!fileInput)
+        throw new Error('Element with ID "xml-file-input" not found');
+      await fileInput.setInputFiles(params.filePath);
+    });
+  },
 });
 
 // noinspection JSUnusedLocalSymbols
 export const pdfEngineDebuggingActions: Plugin = {
-    name: 'pdf-engine-debugging-actions-actions',
-    version: '1.0.0',
-    description: 'High-level pdf engine debugging actions',
-    author: 'Playwright MCP',
-    tools: [
-        enableDebugMode,
-        disableDebugMode,
-        debugStepIntoFirstChild,
-        debugStepToNextSibling,
-        debugStepNext,
-        debugReturnToParent,
-        debugReset,
-        uploadXmlFile,
-    ],
+  name: 'pdf-engine-debugging-actions-actions',
+  version: '1.0.0',
+  description: 'High-level pdf engine debugging actions',
+  author: 'Playwright MCP',
+  tools: [
+    enableDebugMode,
+    disableDebugMode,
+    debugStepIntoFirstChild,
+    debugStepToNextSibling,
+    debugStepNext,
+    debugReturnToParent,
+    debugReset,
+    uploadXmlFile,
+  ],
 
-    initialize: async context => {
-        console.log('Pdf Engine actions plugin initialized');
-    },
+  initialize: async context => {
+    // Pdf Engine actions plugin initialized
+  },
 
-    cleanup: async () => {
-        console.log('Pdf Engine actions plugin cleaned up');
-    },
+  cleanup: async () => {
+    // Pdf Engine actions plugin cleaned up
+  },
 };
 
 // Export individual tools for backward compatibility
 export default [
-    enableDebugMode,
-    disableDebugMode,
-    uploadXmlFile,
+  enableDebugMode,
+  disableDebugMode,
+  uploadXmlFile,
 ];

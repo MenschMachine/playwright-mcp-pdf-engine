@@ -46,9 +46,9 @@ test('test snapshot tool list', async ({ client }) => {
     'browser_wait_for',
   ];
 
-  for (const name of expectedNames) {
+  for (const name of expectedNames)
     expect(actualNames).toContain(name);
-  }
+
 });
 
 test('test capabilities (pdf)', async ({ startClient }) => {

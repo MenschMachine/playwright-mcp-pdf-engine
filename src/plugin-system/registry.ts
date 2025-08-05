@@ -43,7 +43,7 @@ export class PluginRegistry {
     const plugin = this.plugins.get(pluginName);
     if (plugin && this.initialized.has(pluginName)) {
       // Call cleanup if available
-      plugin.cleanup?.();
+      void plugin.cleanup?.();
       this.initialized.delete(pluginName);
     }
     this.plugins.delete(pluginName);
@@ -92,7 +92,7 @@ export class PluginRegistry {
 
             this.initialized.add(name);
           } catch (error) {
-            console.error(`Failed to initialize plugin '${name}':`, error);
+            // Failed to initialize plugin
             throw error;
           }
         });
@@ -132,7 +132,7 @@ export class PluginRegistry {
 
             this.initialized.delete(name);
           } catch (error) {
-            console.error(`Failed to cleanup plugin '${name}':`, error);
+            // Failed to cleanup plugin - continue with others
           }
         });
 

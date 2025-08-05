@@ -619,6 +619,46 @@ http.createServer(async (req, res) => {
 
 <!-- NOTE: This has been generated via update-readme.js -->
 
+- **debug_reset**
+  - Title: Reset traversal to the beginning
+  - Description: Reset traversal to the beginning by interacting with #debug-reset
+  - Parameters: None
+  - Read-only: **false**
+
+<!-- NOTE: This has been generated via update-readme.js -->
+
+- **debug_return_to_parent**
+  - Title: Return to parent element
+  - Description: Return to parent element by interacting with #debug-return-to-parent
+  - Parameters: None
+  - Read-only: **false**
+
+<!-- NOTE: This has been generated via update-readme.js -->
+
+- **debug_step_into_first_child**
+  - Title: Debug step into first child
+  - Description: Debug step into first child by interacting with #debug-step-into-first-child
+  - Parameters: None
+  - Read-only: **false**
+
+<!-- NOTE: This has been generated via update-readme.js -->
+
+- **debug_step_next**
+  - Title: Step to next element in traversal order
+  - Description: Step to next element in traversal order by interacting with #debug-step-next
+  - Parameters: None
+  - Read-only: **false**
+
+<!-- NOTE: This has been generated via update-readme.js -->
+
+- **debug_step_to_next_sibling**
+  - Title: Step to next sibling element
+  - Description: Step to next sibling element by interacting with #debug-step-to-next-sibling
+  - Parameters: None
+  - Read-only: **false**
+
+<!-- NOTE: This has been generated via update-readme.js -->
+
 - **disable_debug_mode**
   - Title: Disable debug mode
   - Description: Disable debug mode by interacting with #debug-toggle-on-off
@@ -631,15 +671,6 @@ http.createServer(async (req, res) => {
   - Title: Enable debug mode
   - Description: Enable debug mode by interacting with #debug-toggle-on-off
   - Parameters: None
-  - Read-only: **false**
-
-<!-- NOTE: This has been generated via update-readme.js -->
-
-- **start**
-  - Title: Start navigation
-  - Description: Navigate to a URL
-  - Parameters:
-    - `url` (string): The URL to navigate to
   - Read-only: **false**
 
 <!-- NOTE: This has been generated via update-readme.js -->

@@ -14,54 +14,54 @@
  * limitations under the License.
  */
 
-import {z} from 'zod';
-import {defineTabTool} from '../tools/tool.js';
+import { z } from 'zod';
+import { defineTabTool } from '../tools/tool.js';
 
 /**
  * Helper function to create selector-based tools
  * Reusable across all plugins for common UI interactions
  */
 export const createSelectorTool = (
-    name: string,
-    description: string,
-    selector: string,
-    action: 'click' | 'check' | 'uncheck' = 'click'
+  name: string,
+  description: string,
+  selector: string,
+  action: 'click' | 'check' | 'uncheck' = 'click'
 ) => {
-    return defineTabTool({
-        capability: 'core',
-        schema: {
-            name,
-            title: description,
-            description: `${description} by interacting with ${selector}`,
-            inputSchema: z.object({}),
-            type: 'destructive',
-        },
+  return defineTabTool({
+    capability: 'core',
+    schema: {
+      name,
+      title: description,
+      description: `${description} by interacting with ${selector}`,
+      inputSchema: z.object({}),
+      type: 'destructive',
+    },
 
-        handle: async (tab, params, response) => {
-            response.setIncludeSnapshot();
+    handle: async (tab, params, response) => {
+      response.setIncludeSnapshot();
 
-            const element = await tab.page.$(selector);
-            if (!element)
-                throw new Error(`Element not found: ${selector}`);
+      const element = await tab.page.$(selector);
+      if (!element)
+        throw new Error(`Element not found: ${selector}`);
 
-            response.addCode(`// ${description}`);
+      response.addCode(`// ${description}`);
 
-            if (action === 'click') {
-                response.addCode(`await page.click('${selector}');`);
-                await tab.waitForCompletion(async () => {
-                    await element.click();
-                });
-            } else if (action === 'check') {
-                response.addCode(`await page.check('${selector}');`);
-                await tab.waitForCompletion(async () => {
-                    await element.check();
-                });
-            } else if (action === 'uncheck') {
-                response.addCode(`await page.uncheck('${selector}');`);
-                await tab.waitForCompletion(async () => {
-                    await element.uncheck();
-                });
-            }
-        },
-    });
+      if (action === 'click') {
+        response.addCode(`await page.click('${selector}');`);
+        await tab.waitForCompletion(async () => {
+          await element.click();
+        });
+      } else if (action === 'check') {
+        response.addCode(`await page.check('${selector}');`);
+        await tab.waitForCompletion(async () => {
+          await element.check();
+        });
+      } else if (action === 'uncheck') {
+        response.addCode(`await page.uncheck('${selector}');`);
+        await tab.waitForCompletion(async () => {
+          await element.uncheck();
+        });
+      }
+    },
+  });
 };
