@@ -118,12 +118,17 @@ ${this._code.join('\n')}
     if (this._includeSnapshot || this._includeTabs)
       response.push(...renderTabsMarkdown(this._context.tabs(), this._includeTabs));
 
+    // Calculate tokens used so far before adding snapshot
+    const preSnapshotText = response.join('\n');
+    const preSnapshotTokens = estimateTokens(preSnapshotText);
+    const availableTokensForSnapshot = Math.max(1000, MAX_TOKENS - preSnapshotTokens - 2000); // Reserve 2000 for safety
+
     // Add snapshot if provided.
     if (this._tabSnapshot?.modalStates.length) {
       response.push(...renderModalStates(this._context, this._tabSnapshot.modalStates));
       response.push('');
     } else if (this._tabSnapshot) {
-      response.push(renderTabSnapshot(this._tabSnapshot, MAX_TOKENS - currentTokens));
+      response.push(renderTabSnapshot(this._tabSnapshot, availableTokensForSnapshot));
       response.push('');
     }
 
