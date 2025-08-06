@@ -68,6 +68,29 @@ const debugReset = createSelectorTool(
     'click'
 );
 
+const savePdfCanvas = defineTabTool({
+  capability: 'core',
+  schema: {
+    name: 'save_pdf_canvas',
+    title: 'Save PDF canvas as image',
+    description: 'Take a screenshot of the PDF canvas and save it to a temporary file',
+    inputSchema: z.object({}),
+    type: 'readOnly',
+  },
+
+  handle: async (tab, _params, response) => {
+    response.addCode(`// Take screenshot of PDF canvas (#pdf-canvas)`);
+    response.addCode(`await page.locator('#pdf-canvas').screenshot({ path: '/tmp/pdf-canvas-' + Date.now() + '.png' });`);
+
+    const timestamp = Date.now();
+    const filePath = `/tmp/pdf-canvas-${timestamp}.png`;
+
+    await tab.page.locator('#pdf-canvas').screenshot({ path: filePath });
+
+    response.addResult(`PDF canvas saved to: ${filePath}`);
+  }
+});
+
 
 // File upload tool
 const uploadXmlFile = defineTabTool({
@@ -111,6 +134,7 @@ export const pdfEngineDebuggingActions: Plugin = {
     debugStepNext,
     debugReturnToParent,
     debugReset,
+    savePdfCanvas,
     uploadXmlFile,
   ],
 
@@ -127,5 +151,6 @@ export const pdfEngineDebuggingActions: Plugin = {
 export default [
   enableDebugMode,
   disableDebugMode,
+  savePdfCanvas,
   uploadXmlFile,
 ];

@@ -95,6 +95,8 @@ export class Response {
 
   serialize(): { content: (TextContent | ImageContent)[], isError?: boolean } {
     const response: string[] = [];
+    const MAX_TOKENS = 23000; // Leave buffer for MCP protocol overhead
+    let currentTokens = 0;
 
     // Start with command result.
     if (this._result.length) {
@@ -121,32 +123,82 @@ ${this._code.join('\n')}
       response.push(...renderModalStates(this._context, this._tabSnapshot.modalStates));
       response.push('');
     } else if (this._tabSnapshot) {
-      response.push(renderTabSnapshot(this._tabSnapshot));
+      response.push(renderTabSnapshot(this._tabSnapshot, MAX_TOKENS - currentTokens));
       response.push('');
+    }
+
+    // Calculate current token usage and truncate if necessary
+    const fullText = response.join('\n');
+    currentTokens = estimateTokens(fullText);
+    let finalText = fullText;
+
+    if (currentTokens > MAX_TOKENS) {
+      finalText = truncateToTokenLimit(fullText, MAX_TOKENS);
+      currentTokens = estimateTokens(finalText);
     }
 
     // Main response part
     const content: (TextContent | ImageContent)[] = [
-      { type: 'text', text: response.join('\n') },
+      { type: 'text', text: finalText },
     ];
 
-    // Image attachments.
+    // Image attachments - limit to avoid exceeding token limit
     if (this._context.config.imageResponses !== 'omit') {
-      for (const image of this._images)
-        content.push({ type: 'image', data: image.data.toString('base64'), mimeType: image.contentType });
+      const remainingTokens = MAX_TOKENS - currentTokens;
+      const maxImageTokens = Math.max(0, remainingTokens - 1000); // Reserve 1000 tokens for safety
+      let imageTokens = 0;
+
+      for (const image of this._images) {
+        const base64Data = image.data.toString('base64');
+        const imageTokenEstimate = estimateTokens(base64Data);
+
+        if (imageTokens + imageTokenEstimate <= maxImageTokens) {
+          content.push({ type: 'image', data: base64Data, mimeType: image.contentType });
+          imageTokens += imageTokenEstimate;
+        } else {
+          // Add a message about truncated images
+          const truncatedMsg = '\n\n### Images Truncated\nSome images were omitted to stay within token limits.';
+          content[0].text += truncatedMsg;
+          break;
+        }
+      }
     }
 
     return { content, isError: this._isError };
   }
 }
 
-function renderTabSnapshot(tabSnapshot: TabSnapshot): string {
+function renderTabSnapshot(tabSnapshot: TabSnapshot, maxTokens: number = 10000): string {
   const lines: string[] = [];
 
   if (tabSnapshot.consoleMessages.length) {
     lines.push(`### New console messages`);
-    for (const message of tabSnapshot.consoleMessages)
-      lines.push(`- ${trim(message.toString(), 100)}`);
+
+    // Calculate available tokens for console messages
+    const currentContent = lines.join('\n');
+    const usedTokens = estimateTokens(currentContent);
+    const availableTokens = Math.max(0, maxTokens - usedTokens - 1000); // Reserve 1000 for other content
+
+    let consoleTokens = 0;
+    let messagesShown = 0;
+
+    for (const message of tabSnapshot.consoleMessages) {
+      const messageText = `- ${trim(message.toString(), 500)}`; // Allow longer messages
+      const messageTokens = estimateTokens(messageText);
+
+      if (consoleTokens + messageTokens <= availableTokens) {
+        lines.push(messageText);
+        consoleTokens += messageTokens;
+        messagesShown++;
+      } else {
+        break;
+      }
+    }
+
+    if (messagesShown < tabSnapshot.consoleMessages.length)
+      lines.push(`- ... and ${tabSnapshot.consoleMessages.length - messagesShown} more messages (truncated to fit token limit)`);
+
+
     lines.push('');
   }
 
@@ -166,7 +218,20 @@ function renderTabSnapshot(tabSnapshot: TabSnapshot): string {
   lines.push(`- Page Title: ${tabSnapshot.title}`);
   lines.push(`- Page Snapshot:`);
   lines.push('```yaml');
-  lines.push(tabSnapshot.ariaSnapshot);
+
+  // Truncate ARIA snapshot if it's too large
+  const ariaSnapshot = tabSnapshot.ariaSnapshot;
+  const ariaTokens = estimateTokens(ariaSnapshot);
+  const reservedTokens = estimateTokens(lines.join('\n')) + 500; // Reserve for other content
+  const availableTokens = maxTokens - reservedTokens;
+
+  if (ariaTokens > availableTokens && availableTokens > 0) {
+    const truncatedAria = truncateToTokenLimit(ariaSnapshot, availableTokens);
+    lines.push(truncatedAria);
+  } else {
+    lines.push(ariaSnapshot);
+  }
+
   lines.push('```');
 
   return lines.join('\n');
@@ -198,4 +263,19 @@ function trim(text: string, maxLength: number) {
   if (text.length <= maxLength)
     return text;
   return text.slice(0, maxLength) + '...';
+}
+
+// Rough token estimation (1 token ≈ 4 characters)
+function estimateTokens(text: string): number {
+  return Math.ceil(text.length / 4);
+}
+
+// Truncate text to stay under token limit
+function truncateToTokenLimit(text: string, maxTokens: number): string {
+  const maxChars = maxTokens * 4;
+  if (text.length <= maxChars)
+    return text;
+
+  const truncated = text.slice(0, maxChars - 100); // Leave room for truncation message
+  return truncated + '\n\n... [Response truncated to stay under 25,000 token limit] ...';
 }

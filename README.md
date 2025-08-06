@@ -431,6 +431,18 @@ http.createServer(async (req, res) => {
 
 <!-- NOTE: This has been generated via update-readme.js -->
 
+- **browser_canvas_screenshot**
+  - Title: Take canvas screenshot
+  - Description: Capture a canvas element and save it as an image to a temporary file path
+  - Parameters:
+    - `canvasSelector` (string): CSS selector for the canvas element to capture
+    - `filename` (string, optional): File name to save the canvas image to. Defaults to `canvas-{timestamp}.png` if not specified.
+    - `format` (string, optional): Image format for the canvas export. Default is png.
+    - `quality` (number, optional): Image quality for jpeg/webp formats (0-1). Ignored for png.
+  - Read-only: **true**
+
+<!-- NOTE: This has been generated via update-readme.js -->
+
 - **browser_click**
   - Title: Click
   - Description: Perform click on a web page
@@ -672,6 +684,14 @@ http.createServer(async (req, res) => {
   - Description: Enable debug mode by interacting with #debug-toggle-on-off
   - Parameters: None
   - Read-only: **false**
+
+<!-- NOTE: This has been generated via update-readme.js -->
+
+- **save_pdf_canvas**
+  - Title: Save PDF canvas as image
+  - Description: Take a screenshot of the PDF canvas and save it to a temporary file
+  - Parameters: None
+  - Read-only: **true**
 
 <!-- NOTE: This has been generated via update-readme.js -->
 
