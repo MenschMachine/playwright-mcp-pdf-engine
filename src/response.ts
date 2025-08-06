@@ -95,7 +95,7 @@ export class Response {
 
   serialize(): { content: (TextContent | ImageContent)[], isError?: boolean } {
     const response: string[] = [];
-    const MAX_TOKENS = 23000; // Leave buffer for MCP protocol overhead
+    const MAX_TOKENS = 20000; // Conservative limit to ensure we stay under 25k
     let currentTokens = 0;
 
     // Start with command result.
@@ -270,17 +270,17 @@ function trim(text: string, maxLength: number) {
   return text.slice(0, maxLength) + '...';
 }
 
-// Rough token estimation (1 token ≈ 4 characters)
+// Conservative token estimation (1 token ≈ 2.5 characters for safety)
 function estimateTokens(text: string): number {
-  return Math.ceil(text.length / 4);
+  return Math.ceil(text.length / 2.5);
 }
 
 // Truncate text to stay under token limit
 function truncateToTokenLimit(text: string, maxTokens: number): string {
-  const maxChars = maxTokens * 4;
+  const maxChars = maxTokens * 2.5; // Conservative estimate
   if (text.length <= maxChars)
     return text;
 
-  const truncated = text.slice(0, maxChars - 100); // Leave room for truncation message
+  const truncated = text.slice(0, maxChars - 200); // Leave more room for truncation message
   return truncated + '\n\n... [Response truncated to stay under 25,000 token limit] ...';
 }
