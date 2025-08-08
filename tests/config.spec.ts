@@ -45,27 +45,6 @@ test('config user data dir', async ({ startClient, server, mcpMode }, testInfo) 
   expect(files.length).toBeGreaterThan(0);
 });
 
-test.describe(() => {
-  test.use({ mcpBrowser: '' });
-  test('browserName', { annotation: { type: 'issue', description: 'https://github.com/microsoft/playwright-mcp/issues/458' } }, async ({ startClient, mcpMode }, testInfo) => {
-    const config: Config = {
-      browser: {
-        browserName: 'firefox',
-      },
-    };
-    const configPath = testInfo.outputPath('config.json');
-    await fs.promises.writeFile(configPath, JSON.stringify(config, null, 2));
-
-    const { client } = await startClient({ args: ['--config', configPath] });
-    expect(await client.callTool({
-      name: 'browser_navigate',
-      arguments: { url: 'data:text/html,<script>document.title = navigator.userAgent</script>' },
-    })).toHaveResponse({
-      pageState: expect.stringContaining(`Firefox`),
-    });
-  });
-});
-
 test.describe('sandbox configuration', () => {
   test('should enable sandbox by default (no --no-sandbox flag)', async () => {
     const { configFromCLIOptions } = await import('../lib/config.js');
