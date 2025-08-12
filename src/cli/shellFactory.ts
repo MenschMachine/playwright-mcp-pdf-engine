@@ -1,7 +1,7 @@
 // Register extracted commands
 import {program} from 'commander';
 import {SimpleShell} from './shell.js';
-import {cdCommand, dateCommand, echoCommand, lsCommand, pwdCommand} from './commands/index.js';
+import {cdCommand, dateCommand, echoCommand, lsCommand, pwdCommand, listToolsCommand} from './commands/index.js';
 
 
 // CLI setup
@@ -17,6 +17,7 @@ program
         shell.registerCommand(cdCommand);
         shell.registerCommand(lsCommand);
         shell.registerCommand(dateCommand);
+        shell.registerCommand(listToolsCommand);
 
         await shell.start();
     });

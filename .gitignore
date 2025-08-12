@@ -11,3 +11,4 @@ sessions/
 .aider*
 config.*.json
 !config.example.json
+.tsbuildinfo

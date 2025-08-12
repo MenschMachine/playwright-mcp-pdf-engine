@@ -41,18 +41,7 @@ export const baseRules = {
     /**
      * Enforced rules
      */
-    // syntax preferences
-    quotes: [
-        2,
-        "single",
-        {
-            avoidEscape: true,
-            allowTemplateLiterals: true,
-        },
-    ],
-    "jsx-quotes": [2, "prefer-single"],
     "no-extra-semi": 2,
-    "indent": 0,
     "@stylistic/semi": [2],
     "comma-style": [2, "last"],
     "wrap-iife": [2, "inside"],
@@ -73,7 +62,6 @@ export const baseRules = {
     ],
     "brace-style": [2, "1tbs", {allowSingleLine: true}],
     "new-parens": 2,
-    "arrow-parens": [2, "as-needed"],
     "prefer-const": 2,
     "quote-props": [2, "consistent"],
     "nonblock-statement-body-position": [2, "below"],

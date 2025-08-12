@@ -4,4 +4,5 @@ export { pwdCommand } from './pwd.js';
 export { cdCommand } from './cd.js';
 export { lsCommand } from './ls.js';
 export { dateCommand } from './date.js';
+export { listToolsCommand } from './listTools.js';
 export type { Command } from './types.js';

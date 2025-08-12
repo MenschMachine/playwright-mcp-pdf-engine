@@ -16,7 +16,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --incremental",
     "lint": "eslint . && tsc --noEmit",
     "lint-fix": "eslint . --fix",
     "update-readme": "node utils/update-readme.js",
