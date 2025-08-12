@@ -30,6 +30,8 @@ class CommandRegistry {
     }
 }
 
+const SHELL_HISTORY_FILE_NAME = '.playwright-mcp-cli-shell_history';
+
 export class SimpleShell {
     private rl: readline.Interface;
     private historyFile: string;
@@ -39,7 +41,7 @@ export class SimpleShell {
 
     constructor() {
         // Set up history file in user's home directory
-        this.historyFile = path.join(os.homedir(), '.shell_history');
+        this.historyFile = path.join(os.homedir(), SHELL_HISTORY_FILE_NAME);
         this.loadHistory();
 
         // Create readline interface with history support
