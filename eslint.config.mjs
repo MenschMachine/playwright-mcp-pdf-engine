@@ -219,7 +219,7 @@ const noBooleanCompareRules = {
 
 export default [
   {
-    ignores: ["**/*.js"],
+    ignores: ["**/*.js", "src/cli-complex/**"],
   },
   {
     files: ["**/*.ts", "**/*.tsx"],
