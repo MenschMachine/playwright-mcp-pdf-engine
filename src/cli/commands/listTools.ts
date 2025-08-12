@@ -1,4 +1,3 @@
-import {ChildProcess} from 'child_process';
 import {McpCommandBase, McpRequest, McpResponse} from './mcpCommandBase.js';
 
 class ListToolsCommand extends McpCommandBase {
@@ -6,15 +5,13 @@ class ListToolsCommand extends McpCommandBase {
     description = 'List all available tools from the Playwright MCP server';
     aliases = ['tools', 'lt'];
 
-    protected sendAdditionalRequests(mcpProcess: ChildProcess): void {
-        const listToolsRequest: McpRequest = {
+    protected buildAdditionalRequest(): McpRequest {
+        return {
             jsonrpc: '2.0',
             id: 2,
             method: 'tools/list',
             params: {}
         };
-
-        mcpProcess.stdin?.write(JSON.stringify(listToolsRequest) + '\n');
     }
 
     protected async processResponses(responses: McpResponse[]): Promise<void> {

@@ -16,7 +16,8 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc --incremental",
+    "build": "tsc",
+    "build:inc": "tsc --incremental",
     "lint": "eslint . && tsc --noEmit",
     "lint-fix": "eslint . --fix",
     "update-readme": "node utils/update-readme.js",
@@ -26,7 +27,7 @@
     "ftest": "playwright test --project=firefox",
     "wtest": "playwright test --project=webkit",
     "run-server": "node lib/browserServer.js",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf lib; rm .tsbuildinfo",
     "npm-publish": "npm run clean && npm run build && npm run test && npm publish"
   },
   "exports": {

@@ -1,13 +1,12 @@
-import {ChildProcess} from 'child_process';
 import {McpCommandBase, McpRequest, McpResponse} from './mcpCommandBase.js';
 
 class BrowserSnapshotCommand extends McpCommandBase {
     name = 'browser-snapshot';
-    description = 'TODO';
+    description = 'Take a snapshot of the current browser page';
     aliases = ['bs'];
 
-    protected sendAdditionalRequests(mcpProcess: ChildProcess): void {
-        const enableDebugRequest: McpRequest = {
+    protected buildAdditionalRequest(): McpRequest {
+        return {
             jsonrpc: '2.0',
             id: 2,
             method: 'tools/call',
@@ -16,8 +15,6 @@ class BrowserSnapshotCommand extends McpCommandBase {
                 arguments: {}
             }
         };
-
-        mcpProcess.stdin?.write(JSON.stringify(enableDebugRequest) + '\n');
     }
 
     protected async processResponses(responses: McpResponse[]): Promise<void> {

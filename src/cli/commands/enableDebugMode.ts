@@ -1,4 +1,3 @@
-import {ChildProcess} from 'child_process';
 import {McpCommandBase, McpRequest, McpResponse} from './mcpCommandBase.js';
 
 class EnableDebugModeCommand extends McpCommandBase {
@@ -6,8 +5,8 @@ class EnableDebugModeCommand extends McpCommandBase {
     description = 'Enable debug mode on the PDF engine debugging interface';
     aliases = ['ed', 'edm'];
 
-    protected sendAdditionalRequests(mcpProcess: ChildProcess): void {
-        const enableDebugRequest: McpRequest = {
+    protected buildAdditionalRequest(): McpRequest {
+        return {
             jsonrpc: '2.0',
             id: 2,
             method: 'tools/call',
@@ -16,8 +15,6 @@ class EnableDebugModeCommand extends McpCommandBase {
                 arguments: {}
             }
         };
-
-        mcpProcess.stdin?.write(JSON.stringify(enableDebugRequest) + '\n');
     }
 
     protected async processResponses(responses: McpResponse[]): Promise<void> {
@@ -43,7 +40,8 @@ class EnableDebugModeCommand extends McpCommandBase {
             }
         }
 
-        console.log('No valid response received for enable debug mode request');
+        console.log('⚠️  No response from enable_debug_mode tool call');
+        console.log('💡 This tool requires an active browser session. Try navigating to a page first.');
     }
 }
 
