@@ -17,7 +17,6 @@ import * as readline from 'readline';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import {program} from 'commander';
 import {cdCommand, Command, dateCommand, echoCommand, lsCommand, pwdCommand} from './commands/index.js';
 
 // Command registry to store registered commands
@@ -46,7 +45,7 @@ class CommandRegistry {
     }
 }
 
-class SimpleShell {
+export class SimpleShell {
     private rl: readline.Interface;
     private historyFile: string;
     private history: string[] = [];
@@ -180,14 +179,6 @@ class SimpleShell {
             description: 'Show command history',
             execute: () => this.showHistory()
         });
-
-        // Register extracted commands
-        this.commandRegistry.register(echoCommand);
-        this.commandRegistry.register(pwdCommand);
-        this.commandRegistry.register(cdCommand);
-        this.commandRegistry.register(lsCommand);
-        this.commandRegistry.register(dateCommand);
-
         // Exit commands
         this.commandRegistry.register({
             name: 'exit',
@@ -247,19 +238,3 @@ Command line editing:
         process.exit(0);
     }
 }
-
-// CLI setup
-program
-    .version('1.0.0')
-    .name('shell')
-    .description('Simple interactive shell with command history')
-    .action(async () => {
-        const shell = new SimpleShell();
-        await shell.start();
-    });
-
-// Start the shell
-program.parseAsync(process.argv).catch(error => {
-    console.error('Shell failed:', error.message);
-    process.exit(1);
-});
