@@ -3,6 +3,7 @@ import {program} from 'commander';
 import {SimpleShell} from './shell.js';
 import {cdCommand, dateCommand, echoCommand, listToolsCommand, lsCommand, pwdCommand} from './commands/index.js';
 import {enableDebugModeCommand} from "./commands/enableDebugMode.js";
+import {browserSnapshotCommand} from "./commands/browserSnapshot.js";
 
 
 // CLI setup
@@ -20,6 +21,7 @@ program
         shell.registerCommand(dateCommand);
         shell.registerCommand(listToolsCommand);
         shell.registerCommand(enableDebugModeCommand);
+        shell.registerCommand(browserSnapshotCommand);
 
         await shell.start();
     });
