@@ -1,39 +1,36 @@
-import {McpCommandBase, McpRequest, McpResponse} from './mcpCommandBase.js';
+import {McpCommandBase, McpResponse} from './mcpCommandBase.js';
+import {mcpConnection} from './mcpConnection.js';
 
 class ListToolsCommand extends McpCommandBase {
     name = 'list-tools';
     description = 'List all available tools from the Playwright MCP server';
     aliases = ['tools', 'lt'];
 
-    protected buildAdditionalRequest(): McpRequest {
-        return {
+    protected async executeCommand(): Promise<McpResponse> {
+        return mcpConnection.sendRequest({
             jsonrpc: '2.0',
-            id: 2,
+            id: mcpConnection.getNextId(),
             method: 'tools/list',
             params: {}
-        };
+        });
     }
 
-    protected async processResponses(responses: McpResponse[]): Promise<void> {
-        console.log(responses.map(r => JSON.stringify(r)).join('\n'));
-
-        let tools: any[] = [];
-        for (const response of responses) {
-            if (response.id === 2 && response.result?.tools) {
-                tools = response.result.tools;
-                break;
-            }
-        }
-
-        if (tools.length === 0) {
-            console.log('No tools found or unable to parse response');
+    protected async processResponse(response: McpResponse): Promise<void> {
+        if (response.error) {
+            console.error('❌ Error listing tools:', response.error);
             return;
         }
 
+        if (!response.result?.tools) {
+            console.log('No tools found');
+            return;
+        }
+
+        const tools = response.result.tools;
         console.log(`\nFound ${tools.length} available tools:\n`);
 
         // Sort tools by name for consistent output
-        const sortedTools = tools.sort((a, b) => a.name.localeCompare(b.name));
+        const sortedTools = tools.sort((a: any, b: any) => a.name.localeCompare(b.name));
 
         for (const tool of sortedTools) {
             console.log(`🔧 ${tool.name}`);
