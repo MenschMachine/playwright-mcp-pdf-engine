@@ -19,19 +19,73 @@ import { createSelectorTool } from '../plugin-system/index.js';
 import type { Plugin } from '../plugin-system/types.js';
 
 // High-level semantic tools
-const enableDebugMode = createSelectorTool(
-    'enable_debug_mode',
-    'Enable debug mode',
-    '#debug-toggle-on-off',
-    'check'
-);
+const enableDebugMode = defineTabTool({
+  capability: 'core',
+  schema: {
+    name: 'enable_debug_mode',
+    title: 'Enable debug mode',
+    description: 'Enable debug mode by interacting with #debug-toggle-on-off',
+    inputSchema: z.object({}),
+    type: 'destructive',
+  },
 
-const disableDebugMode = createSelectorTool(
-    'disable_debug_mode',
-    'Disable debug mode',
-    '#debug-toggle-on-off',
-    'uncheck'
-);
+  handle: async (tab, params, response) => {
+    response.setIncludeSnapshot();
+
+    const button = await tab.page.$('#debug-toggle-on-off');
+    if (!button)
+      throw new Error('Debug toggle button not found: #debug-toggle-on-off');
+
+    // Check current state by reading button text
+    const buttonText = await button.textContent();
+    const isDebugEnabled = buttonText?.includes('Debug Mode ON');
+
+    response.addCode(`// Enable debug mode`);
+
+    if (!isDebugEnabled) {
+      response.addCode(`await page.click('#debug-toggle-on-off');`);
+      await tab.waitForCompletion(async () => {
+        await button.click();
+      });
+    } else {
+      response.addCode(`// Debug mode already enabled`);
+    }
+  },
+});
+
+const disableDebugMode = defineTabTool({
+  capability: 'core',
+  schema: {
+    name: 'disable_debug_mode',
+    title: 'Disable debug mode',
+    description: 'Disable debug mode by interacting with #debug-toggle-on-off',
+    inputSchema: z.object({}),
+    type: 'destructive',
+  },
+
+  handle: async (tab, params, response) => {
+    response.setIncludeSnapshot();
+
+    const button = await tab.page.$('#debug-toggle-on-off');
+    if (!button)
+      throw new Error('Debug toggle button not found: #debug-toggle-on-off');
+
+    // Check current state by reading button text
+    const buttonText = await button.textContent();
+    const isDebugEnabled = buttonText?.includes('Debug Mode ON');
+
+    response.addCode(`// Disable debug mode`);
+
+    if (isDebugEnabled) {
+      response.addCode(`await page.click('#debug-toggle-on-off');`);
+      await tab.waitForCompletion(async () => {
+        await button.click();
+      });
+    } else {
+      response.addCode(`// Debug mode already disabled`);
+    }
+  },
+});
 
 const debugStepIntoFirstChild = createSelectorTool(
     'debug_step_into_first_child',
